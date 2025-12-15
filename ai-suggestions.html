@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternAI - AI Suggestions for Internship</title>
+    <link rel="stylesheet" href="ai-suggestions.css">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">InternAI – AI Suggestions for Internship</h1>
+            <p class="header-subtitle">Upload your resume or chat with your personal AI mentor.</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Chat Area -->
+        <section class="chat-section">
+            <div class="chat-container" id="chatContainer">
+                <!-- Chat messages will be appended here dynamically -->
+            </div>
+        </section>
+
+        <!-- Bottom Input Area -->
+        <section class="input-section">
+            <div class="input-container">
+                <!-- Plus Button with Popup Menu -->
+                <div class="attachment-menu-wrapper">
+                    <button class="plus-button" id="plusButton" title="Attach file">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    
+                    <!-- Popup Menu -->
+                    <div class="attachment-popup" id="attachmentPopup">
+                        <button class="popup-option" id="uploadImageBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <span>Image</span>
+                        </button>
+                        <button class="popup-option" id="uploadDocumentBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                <polyline points="13 2 13 9 20 9"></polyline>
+                            </svg>
+                            <span>Document</span>
+                        </button>
+                    </div>
+                    <input type="file" id="imageInput" accept=".jpg,.jpeg,.png,.gif" hidden>
+                    <input type="file" id="documentInput" accept=".pdf,.doc,.docx,.txt" hidden>
+                </div>
+
+                <!-- Message Input -->
+                <div class="message-input-wrapper">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Type your question about your resume or internships..."
+                        rows="1"
+                    ></textarea>
+                </div>
+
+                <!-- Send Button -->
+                <button class="send-button" id="sendButton">
+                    <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- File Status Display -->
+            <div class="file-status" id="fileStatus" style="display: none;">
+                <span class="file-status-name" id="fileStatusName"></span>
+                <button class="file-status-remove" id="fileStatusRemove">×</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="resumeStore.js"></script>
+    <script src="chatStore.js"></script>
+    <script src="ai-suggestions.js"></script>
+</body>
+</html>

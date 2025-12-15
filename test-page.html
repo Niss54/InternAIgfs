@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Test - InternAI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-btn {
+            background: linear-gradient(135deg, #3498db, #5dade2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+        .test-btn:hover {
+            box-shadow: 0 0 30px rgba(52, 152, 219, 0.8);
+        }
+        #result {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .success { color: #2ecc71; }
+        .error { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <h1>🧪 InternAI Quick Test</h1>
+    
+    <button class="test-btn" onclick="testHealth()">1. Test Server Health</button>
+    <button class="test-btn" onclick="testChat()">2. Test Chat API</button>
+    <button class="test-btn" onclick="openMainPage()">3. Open Main Page</button>
+    
+    <div id="result"></div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+
+        async function testHealth() {
+            resultDiv.innerHTML = '⏳ Testing server health...';
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✅ Server is running!</span>\n\n` + JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Error: ${error.message}</span>\n\nMake sure server is running!`;
+            }
+        }
+
+        async function testChat() {
+            resultDiv.innerHTML = '⏳ Sending test message to AI...';
+            try {
+                const response = await fetch('http://localhost:3000/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Tell me about yourself in one sentence',
+                        userProfile: null,
+                        resume: null
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✅ AI Response received!</span>\n\n` + 
+                                     `<strong>Reply:</strong>\n${data.reply}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Error: ${error.message}</span>\n\n` +
+                                     `Check browser console (F12) for details.`;
+                console.error('Full error:', error);
+            }
+        }
+
+        function openMainPage() {
+            window.open('ai-suggestions.html', '_blank');
+        }
+    </script>
+</body>
+</html>

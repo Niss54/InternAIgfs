@@ -1,0 +1,9 @@
+-- Insert some initial default channels for the networking hub
+INSERT INTO public.networking_channels (name, description, channel_type, is_premium_only, created_by, tags) VALUES
+('General Discussion', 'A place for general conversations and introductions', 'discussion', false, '00000000-0000-0000-0000-000000000000', '{"general", "welcome", "introductions"}'),
+('Technical Q&A', 'Ask and answer technical questions about programming, software development, and technology', 'qa', false, '00000000-0000-0000-0000-000000000000', '{"tech", "programming", "development", "qa"}'),
+('Career Advice', 'Share career tips, interview experiences, and professional guidance', 'discussion', false, '00000000-0000-0000-0000-000000000000', '{"career", "advice", "interview", "professional"}'),
+('Alumni Mentor Panel', 'Premium channel with verified alumni mentors for 1-on-1 guidance and video calls', 'mentor', true, '00000000-0000-0000-0000-000000000000', '{"mentorship", "alumni", "premium", "guidance"}'),
+('Internship Exchange', 'Share internship opportunities, referrals, and application tips', 'discussion', false, '00000000-0000-0000-0000-000000000000', '{"internships", "opportunities", "referrals", "applications"}'),
+('Study Groups', 'Form study groups for coding challenges, interview prep, and skill building', 'discussion', false, '00000000-0000-0000-0000-000000000000', '{"study", "coding", "interview-prep", "learning"}'),
+('Premium Q&A Express', 'Fast-track Q&A with industry experts and senior developers', 'qa', true, '00000000-0000-0000-0000-000000000000', '{"premium", "experts", "qa", "senior-devs"}');
