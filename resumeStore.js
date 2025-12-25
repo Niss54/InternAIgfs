@@ -91,13 +91,21 @@ function generateId() {
  * Save a new resume to the store
  * @param {File} file - The file object
  * @param {string} extractedText - Text content extracted from the file
+ * @param {string} category - File category: "resume", "cv", "certificate", "other"
  * @returns {Object|null} The created resume object or null if failed
  */
-function saveNewResume(file, extractedText) {
+function saveNewResume(file, extractedText, category = 'resume') {
     try {
         if (!file || !file.name) {
             console.error('Invalid file object');
             return null;
+        }
+        
+        // Validate category
+        const validCategories = ['resume', 'cv', 'certificate', 'other'];
+        if (!validCategories.includes(category)) {
+            console.warn(`Invalid category: ${category}. Using 'other'.`);
+            category = 'other';
         }
         
         const store = getStore();
@@ -108,6 +116,7 @@ function saveNewResume(file, extractedText) {
             fileName: file.name,
             fileType: file.type || 'unknown',
             fileSize: file.size,
+            category: category,
             uploadedAt: new Date().toISOString(),
             rawContent: extractedText || `Content of file ${file.name} (to be extracted later).`,
             notes: null

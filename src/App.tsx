@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import AuthGuard from "./components/auth/AuthGuard";
+import IntroVideo from "./components/IntroVideo";
+import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
@@ -16,11 +18,13 @@ import ForgotPasswordPage from "./components/auth/ForgotPasswordPage";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Profile from "./pages/dashboard/Profile";
+import ProfileNew from "./pages/dashboard/ProfileNew";
 import SearchInternships from "./pages/dashboard/SearchInternships";
 import AppliedInternships from "./pages/dashboard/AppliedInternships";
 import Interviews from "./pages/dashboard/Interviews";
 import Premium from "./pages/dashboard/Premium";
 import AIAssistant from "./pages/dashboard/AIAssistant";
+import AISuggestions from "./pages/dashboard/AISuggestions";
 import NetworkingHub from "./pages/dashboard/NetworkingHub";
 import ReferralDashboard from "./pages/dashboard/ReferralDashboard";
 import Certifications from "./pages/dashboard/Certifications";
@@ -38,11 +42,33 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLayout from "./components/admin/AdminLayout";
 import MakeAdminPage from "./pages/admin/MakeAdminPage";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminApplications from "./pages/admin/AdminApplications";
+import AdminInterviews from "./pages/admin/AdminInterviews";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminAIAssistant from "./pages/admin/AdminAIAssistant";
+import AdminSettings from "./pages/admin/AdminSettings";
 import PortfolioBuilder from "./pages/PortfolioBuilder";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  const [showIntro, setShowIntro] = useState(true);
+
+  useEffect(() => {
+    // Check if user has already watched the intro
+    const hasWatched = localStorage.getItem('intro_video_watched');
+    if (hasWatched === 'true') {
+      setShowIntro(false);
+    }
+  }, []);
+
+  if (showIntro) {
+    return <IntroVideo onComplete={() => setShowIntro(false)} />;
+  }
+
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -52,22 +78,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/internships" element={<Internships />} />
-          <Route 
-            path="/resume-generator" 
-            element={
-              <AuthGuard>
-                <ResumeGenerator />
-              </AuthGuard>
-            } 
-          />
-          <Route 
-            path="/portfolio-builder" 
-            element={
-              <AuthGuard>
-                <PortfolioBuilder />
-              </AuthGuard>
-            } 
-          />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-failure" element={<PaymentFailure />} />
           <Route 
@@ -135,6 +145,9 @@ const App = () => (
             <Route path="premium" element={<Premium />} />
             <Route path="premium-upgrade" element={<PremiumUpgrade />} />
             <Route path="ai" element={<AIAssistant />} />
+            <Route path="ai-suggestions" element={<AISuggestions />} />
+            <Route path="resume-generator" element={<ResumeGenerator />} />
+            <Route path="portfolio-builder" element={<PortfolioBuilder />} />
             <Route path="networking" element={<NetworkingHub />} />
             <Route path="referrals" element={<ReferralDashboard />} />
             <Route path="about" element={<About />} />
@@ -150,6 +163,13 @@ const App = () => (
           <Route path="/make-admin" element={<MakeAdminPage />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="applications" element={<AdminApplications />} />
+            <Route path="interviews" element={<AdminInterviews />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="notifications" element={<AdminNotifications />} />
+            <Route path="ai-chat" element={<AdminAIAssistant />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
@@ -158,6 +178,7 @@ const App = () => (
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

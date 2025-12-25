@@ -22,6 +22,15 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// Smart matching engine and internship data loaded globally via index.html
+declare global {
+  interface Window {
+    skillMatchingEngine: any;
+    internshipData: any;
+    profileStore: any;
+  }
+}
+
 const SearchInternships = () => {
   const { user } = useAuth();
   const { profile } = useUserProfile();
@@ -46,81 +55,27 @@ const SearchInternships = () => {
     type: ""
   });
 
-  // Sample internship data (same as Internships.tsx)
-  const internships = [
-    {
-      id: 1,
-      title: "Software Engineering Intern",
-      company: "TechCorp Solutions",
-      location: "Bangalore, India",
-      type: "Remote",
-      duration: "3 months",
-      stipend: "₹25,000/month",
-      skills: ["React", "Node.js", "MongoDB"],
-      posted: "2 days ago",
-      category: "software"
-    },
-    {
-      id: 2,
-      title: "Data Science Intern",
-      company: "DataMinds Analytics",
-      location: "Mumbai, India",
-      type: "Hybrid",
-      duration: "6 months",
-      stipend: "₹30,000/month",
-      skills: ["Python", "Machine Learning", "SQL"],
-      posted: "5 days ago",
-      category: "data-science"
-    },
-    {
-      id: 3,
-      title: "Marketing Intern",
-      company: "Growth Hackers",
-      location: "Delhi, India",
-      type: "On-site",
-      duration: "4 months",
-      stipend: "₹15,000/month",
-      skills: ["Social Media", "Content Writing", "SEO"],
-      posted: "1 week ago",
-      category: "marketing"
-    },
-    {
-      id: 4,
-      title: "UI/UX Design Intern",
-      company: "Creative Studios",
-      location: "Pune, India",
-      type: "Remote",
-      duration: "3 months",
-      stipend: "₹20,000/month",
-      skills: ["Figma", "Adobe XD", "Prototyping"],
-      posted: "3 days ago",
-      category: "design"
-    },
-    {
-      id: 5,
-      title: "Full Stack Developer Intern",
-      company: "StartupHub",
-      location: "Hyderabad, India",
-      type: "Remote",
-      duration: "6 months",
-      stipend: "₹35,000/month",
-      skills: ["React", "Django", "PostgreSQL"],
-      posted: "1 day ago",
-      category: "software"
-    },
-    {
-      id: 6,
-      title: "Business Development Intern",
-      company: "Global Ventures",
-      location: "Chennai, India",
-      type: "Hybrid",
-      duration: "3 months",
-      stipend: "₹18,000/month",
-      skills: ["Sales", "Communication", "Market Research"],
-      posted: "4 days ago",
-      category: "business"
-    }
-  ];
+  // Get internships from dummy data (30 realistic internships)
+  const allDummyInternships = typeof window !== 'undefined' && window.internshipData 
+    ? window.internshipData.getAllInternships() 
+    : [];
+  
+  // Transform dummy internships to match UI format
+  const internships = allDummyInternships.map((intern: any) => ({
+    id: parseInt(intern.id.replace('int', '')),
+    title: intern.title,
+    company: intern.company,
+    location: intern.location,
+    type: intern.location === 'Remote' ? 'Remote' : 'On-site',
+    duration: intern.duration,
+    stipend: `₹${intern.stipend}/month`,
+    skills: intern.requiredSkills,
+    posted: '2 days ago',
+    category: intern.category.toLowerCase().replace(/\s+/g, '-'),
+    domain: intern.domain,
+    positions: intern.positions,
+    educationRequired: intern.educationRequired
+  }));
 
   const filteredInternships = internships.filter(internship => {
     const matchesSearch = internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -155,32 +110,60 @@ const SearchInternships = () => {
     
     try {
       setLoadingRecommendations(true);
-      const { data, error } = await supabase.functions.invoke('ai-internship-matcher', {
-        body: { limit: 5, forceRefresh }
-      });
-
-      if (error) throw error;
-
-      setAiRecommendations(data.recommendations || []);
       
-      if (data.cached) {
+      // Get user profile from localStorage
+      const profileStore = window.profileStore;
+      const userProfile = profileStore?.getProfile();
+
+      if (!userProfile || !userProfile.skills || userProfile.skills.length === 0) {
+        // If no profile, show top 5 internships
+        const topInternships = allDummyInternships.slice(0, 5).map((intern: any) => ({
+          ...intern,
+          matchScore: 0,
+          matchReason: "Complete your profile for personalized recommendations"
+        }));
+        setAiRecommendations(topInternships);
+        setLoadingRecommendations(false);
+        return;
+      }
+
+      // Use smart matching engine to get AI recommendations
+      const smartMatches = window.skillMatchingEngine?.getSmartInternshipMatches(
+        userProfile,
+        allDummyInternships,
+        60, // Minimum 60% match score for recommendations
+        10  // Top 10 recommendations
+      );
+
+      if (smartMatches && smartMatches.length > 0) {
+        setAiRecommendations(smartMatches.map((match: any) => ({
+          ...match.internship,
+          matchScore: match.score,
+          matchReason: `${match.score}% match - ${match.matchDetails.skillsMatch}% skills, ${match.matchDetails.roleMatch}% role`
+        })));
+        
         toast({
-          title: "AI Recommendations Loaded",
-          description: "Showing your daily personalized matches",
+          title: "AI Recommendations Generated! 🎯",
+          description: `Found ${smartMatches.length} internships matching your profile!`,
         });
       } else {
-        toast({
-          title: "Fresh AI Recommendations Generated",
-          description: `Found ${data.recommendations?.length || 0} perfect matches for you!`,
-        });
+        // Fallback to top internships
+        const topInternships = allDummyInternships.slice(0, 5).map((intern: any) => ({
+          ...intern,
+          matchScore: 0,
+          matchReason: "Explore these opportunities"
+        }));
+        setAiRecommendations(topInternships);
       }
     } catch (error) {
       console.error('Error loading AI recommendations:', error);
-      toast({
-        title: "Recommendations Unavailable",
-        description: "Using standard search. Complete your profile for AI matching.",
-        variant: "destructive"
-      });
+      // Fallback to showing all internships
+      const topInternships = allDummyInternships.slice(0, 5).map((intern: any) => ({
+        ...intern,
+        matchScore: 0,
+        matchReason: "Featured internships"
+      }));
+      setAiRecommendations(topInternships);
     } finally {
       setLoadingRecommendations(false);
     }
@@ -270,18 +253,101 @@ const SearchInternships = () => {
     }
   };
 
-  const confirmAutoApply = () => {
+  const confirmAutoApply = async () => {
+    if (!profile) {
+      toast({
+        title: "Profile Required",
+        description: "Please complete your profile to use auto-apply.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setAutoApplyEnabled(true);
     setShowAutoApplyDialog(false);
     
-    // Auto-apply to first 5 internships
-    const firstFive = filteredInternships.slice(0, 5);
-    setAppliedInternships(firstFive.map(i => i.id));
-    
-    toast({
-      title: "Auto-Apply Enabled! 🤖",
-      description: `Successfully auto-applied to ${firstFive.length} internships based on your profile.`,
-    });
+    try {
+      // Get user profile from localStorage (profileStore)
+      const profileStore = window.profileStore;
+      const userProfile = profileStore?.getProfile();
+
+      if (!userProfile || !userProfile.skills || userProfile.skills.length === 0) {
+        toast({
+          title: "Profile Incomplete",
+          description: "Please add your skills to get smart recommendations.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Get all internships from dummy data
+      const allInternships = window.internshipData?.getAllInternships() || [];
+
+      // Use smart matching to find best internships (70% match minimum, top 5)
+      const smartMatches = window.skillMatchingEngine?.getSmartInternshipMatches(
+        userProfile,
+        allInternships,
+        70, // Minimum 70% match score
+        5   // Top 5 matches
+      );
+
+      if (!smartMatches || smartMatches.length === 0) {
+        toast({
+          title: "No Matches Found",
+          description: "No internships match your profile. Try updating your skills.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Deduct AI tokens (1 token per auto-apply operation)
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('ai_tokens')
+        .eq('id', user?.uid)
+        .single();
+
+      if (profileError) throw profileError;
+
+      const currentTokens = (profileData as any)?.ai_tokens || 0;
+      if (currentTokens < 1) {
+        toast({
+          title: "Insufficient AI Tokens",
+          description: "You need 1 AI token to use auto-apply. Earn more by using the platform!",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Deduct 1 token
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ ai_tokens: currentTokens - 1 } as any)
+        .eq('id', user?.uid);
+
+      if (updateError) throw updateError;
+
+      // Apply to matched internships
+      const appliedIds = smartMatches.map(match => match.internship.id);
+      setAppliedInternships(appliedIds);
+      
+      // Show detailed match breakdown
+      const matchDetails = smartMatches.map(match => 
+        `${match.internship.title} at ${match.internship.company} (${match.score}% match)`
+      ).join(', ');
+
+      toast({
+        title: "Smart Auto-Apply Complete! 🎯",
+        description: `Applied to ${smartMatches.length} internships with ${smartMatches[0]?.score}%+ match: ${smartMatches[0]?.internship.title}, ${smartMatches[1]?.internship.title}, and more. 1 AI token deducted.`,
+      });
+    } catch (error) {
+      console.error('Auto-apply error:', error);
+      toast({
+        title: "Auto-Apply Failed",
+        description: "An error occurred. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const cancelAutoApply = () => {

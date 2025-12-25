@@ -30,10 +30,11 @@ interface SidebarItem {
 }
 
 export const PortfolioDashboard: React.FC = () => {
-  const { data, selectedElement, isPremium, publishPortfolio, exportStatic, generatePDF } = usePortfolio();
+  const { data, selectedElement, isPremium, publishPortfolio, exportStatic, generatePDF, setTheme } = usePortfolio();
   const [activeSection, setActiveSection] = useState('profile');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [previewFullscreen, setPreviewFullscreen] = useState(false);
+  const [portfolioUrl, setPortfolioUrl] = useState('');
 
   const sidebarItems: SidebarItem[] = [
     { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
@@ -146,34 +147,46 @@ export const PortfolioDashboard: React.FC = () => {
         );
 
       case 'theme':
+        const themes = [
+          { id: 'modern', name: 'Modern', desc: 'Clean and professional design', premium: false, gradient: 'from-blue-500/20 to-cyan-500/20' },
+          { id: 'minimal', name: 'Minimal', desc: 'Simple and elegant layout', premium: false, gradient: 'from-gray-500/20 to-slate-500/20' },
+          { id: 'showcase', name: 'Showcase', desc: 'Bold and creative presentation', premium: false, gradient: 'from-purple-500/20 to-pink-500/20' },
+          { id: 'corporate', name: 'Corporate', desc: 'Professional business style', premium: false, gradient: 'from-indigo-500/20 to-blue-500/20' },
+          { id: 'creative', name: 'Creative', desc: 'Artistic and vibrant design', premium: false, gradient: 'from-orange-500/20 to-red-500/20' },
+          { id: 'dark-mode', name: 'Dark Mode', desc: 'Sleek dark theme', premium: false, gradient: 'from-gray-800/40 to-black/40' },
+          { id: 'glassmorphism', name: 'Glass', desc: 'Modern glassmorphism effect', premium: true, gradient: 'from-white/30 to-white/10' },
+          { id: 'interactive-3d', name: 'Interactive 3D', desc: 'Advanced 3D animations', premium: true, gradient: 'from-emerald-500/20 to-teal-500/20' },
+        ];
+        
         return (
           <div className="p-6">
             <h2 className="text-2xl font-bold mb-6">Theme Settings</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {(['modern', 'minimal', 'showcase', 'interactive-3d'] as const).map((theme) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {themes.map((theme) => (
                 <Card 
-                  key={theme} 
-                  className={`p-4 cursor-pointer transition-all ${
-                    data.theme === theme ? 'ring-2 ring-primary' : ''
-                  } ${theme === 'interactive-3d' && !isPremium ? 'opacity-50' : ''}`}
+                  key={theme.id} 
+                  className={`p-4 cursor-pointer transition-all hover:scale-105 ${
+                    data.theme === theme.id ? 'ring-2 ring-primary shadow-lg' : ''
+                  } ${theme.premium && !isPremium ? 'opacity-50' : ''}`}
                   onClick={() => {
-                    if (theme === 'interactive-3d' && !isPremium) return;
-                    // setTheme(theme);
+                    if (theme.premium && !isPremium) return;
+                    setTheme(theme.id as any);
                   }}
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold capitalize">{theme.replace('-', ' ')}</h3>
-                    {theme === 'interactive-3d' && !isPremium && (
+                    <h3 className="font-semibold">{theme.name}</h3>
+                    {theme.premium && !isPremium && (
                       <Crown className="w-4 h-4 text-amber-500" />
                     )}
                   </div>
-                  <div className="h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-md mb-3"></div>
-                  <p className="text-xs text-muted-foreground">
-                    {theme === 'modern' && 'Clean and professional design'}
-                    {theme === 'minimal' && 'Simple and elegant layout'}
-                    {theme === 'showcase' && 'Bold and creative presentation'}
-                    {theme === 'interactive-3d' && 'Advanced 3D animations and interactions'}
-                  </p>
+                  <div className={`h-24 bg-gradient-to-br ${theme.gradient} rounded-md mb-3 flex items-center justify-center`}>
+                    {data.theme === theme.id && (
+                      <div className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+                        Active
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">{theme.desc}</p>
                 </Card>
               ))}
             </div>
@@ -181,37 +194,58 @@ export const PortfolioDashboard: React.FC = () => {
         );
 
       case 'publish':
+        const username = data.profile.name.toLowerCase().replace(/\s+/g, '') || 'user';
+        const generatedUrl = `www.internai.com/${username}-portfolio`;
+        
         return (
           <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6">Publish Settings</h2>
+            <h2 className="text-2xl font-bold mb-6">Publish Portfolio</h2>
             <div className="space-y-6">
-              <Card className="p-6">
+              <Card className="p-6 bg-gradient-to-br from-primary/10 to-secondary/10">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h3 className="font-semibold">Portfolio Status</h3>
+                    <h3 className="font-semibold text-lg">Portfolio Status</h3>
                     <p className="text-sm text-muted-foreground">
-                      {data.isPublished ? 'Your portfolio is live' : 'Your portfolio is in draft'}
+                      {data.isPublished ? '🟢 Your portfolio is live!' : '🔴 Draft mode'}
                     </p>
                   </div>
                   <Button 
-                    onClick={publishPortfolio}
+                    onClick={() => {
+                      publishPortfolio();
+                      setPortfolioUrl(generatedUrl);
+                    }}
                     variant={data.isPublished ? 'destructive' : 'default'}
+                    size="lg"
                   >
-                    {data.isPublished ? 'Unpublish' : 'Publish'}
+                    {data.isPublished ? 'Unpublish' : '🚀 Publish Now'}
                   </Button>
                 </div>
                 {data.isPublished && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-green-500" />
-                      <span className="text-sm font-mono bg-secondary px-2 py-1 rounded">
-                        /u/{data.slug}
-                      </span>
+                  <div className="space-y-4 mt-6">
+                    <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border-2 border-green-500">
+                      <label className="text-xs text-muted-foreground mb-2 block">Your Portfolio URL</label>
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-5 h-5 text-green-500" />
+                        <span className="text-lg font-mono text-primary font-bold">
+                          {generatedUrl}
+                        </span>
+                      </div>
                     </div>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Share className="w-3 h-3" />
-                      Share Link
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="gap-2 flex-1" onClick={() => {
+                        navigator.clipboard.writeText(`https://${generatedUrl}`);
+                      }}>
+                        <Share className="w-4 h-4" />
+                        Copy Link
+                      </Button>
+                      <Button variant="outline" size="sm" className="gap-2 flex-1">
+                        <Eye className="w-4 h-4" />
+                        Preview
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      💡 Share this link on LinkedIn, resume, or anywhere to showcase your work!
+                    </p>
                   </div>
                 )}
               </Card>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile - InternAI</title>
+    <link rel="stylesheet" href="profile-setup.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">InternAI Profile Setup</h1>
+            <p class="header-subtitle">Complete your profile to get personalized internship recommendations</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Basic Info</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Education</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Skills</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Documents</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Step 1: Basic Info -->
+            <div class="form-step active" id="step1">
+                <h2 class="step-title">Basic Information</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Target Role <span class="required">*</span></label>
+                        <input type="text" id="role" placeholder="e.g., Web Developer Intern" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="address">Address (Optional)</label>
+                        <input type="text" id="address" placeholder="City, State, Country">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="shortDescription">About You (2-3 lines)</label>
+                        <textarea id="shortDescription" rows="3" placeholder="Brief description about yourself, your interests, and career goals..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Education Details -->
+            <div class="form-step" id="step2">
+                <h2 class="step-title">Education Details</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="instituteName">Institute/College Name <span class="required">*</span></label>
+                        <input type="text" id="instituteName" placeholder="Your college/university" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseName">Course/Degree <span class="required">*</span></label>
+                        <input type="text" id="courseName" placeholder="e.g., B.Tech, BBA, MBA" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="branch">Branch/Major <span class="required">*</span></label>
+                        <input type="text" id="branch" placeholder="e.g., Computer Science" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="graduationStatus">Status <span class="required">*</span></label>
+                        <select id="graduationStatus" required>
+                            <option value="">Select status</option>
+                            <option value="Undergraduate">Undergraduate (Pursuing)</option>
+                            <option value="Graduate">Graduate (Pursuing)</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tenthMarks">10th Marks/Percentage (Optional)</label>
+                        <input type="text" id="tenthMarks" placeholder="e.g., 85%">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="twelfthMarks">12th Marks/Percentage (Optional)</label>
+                        <input type="text" id="twelfthMarks" placeholder="e.g., 90%">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Previous</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Skills & Achievements -->
+            <div class="form-step" id="step3">
+                <h2 class="step-title">Skills & Achievements</h2>
+                
+                <div class="form-section">
+                    <label>Your Skills (Max 6) <span class="required">*</span></label>
+                    <p class="helper-text">Add your top skills. Press Enter or click Add after each skill.</p>
+                    <div class="skill-input-container">
+                        <input type="text" id="skillInput" placeholder="Enter a skill (e.g., JavaScript)">
+                        <button type="button" class="btn-add" onclick="addSkill()">Add</button>
+                    </div>
+                    <div class="skills-list" id="skillsList"></div>
+                </div>
+
+                <div class="form-section">
+                    <label>Target Internship Roles</label>
+                    <p class="helper-text">What type of internships are you looking for?</p>
+                    <div class="skill-input-container">
+                        <input type="text" id="targetRoleInput" placeholder="e.g., Data Analyst Intern">
+                        <button type="button" class="btn-add" onclick="addTargetRole()">Add</button>
+                    </div>
+                    <div class="skills-list" id="targetRolesList"></div>
+                </div>
+
+                <div class="form-section">
+                    <label>Achievements</label>
+                    <p class="helper-text">Add your key achievements and accomplishments</p>
+                    <div class="skill-input-container">
+                        <input type="text" id="achievementInput" placeholder="e.g., Won first prize in hackathon">
+                        <button type="button" class="btn-add" onclick="addAchievement()">Add</button>
+                    </div>
+                    <div class="skills-list" id="achievementsList"></div>
+                </div>
+
+                <div class="form-section">
+                    <label>Certificates</label>
+                    <p class="helper-text">List your certifications</p>
+                    <div class="skill-input-container">
+                        <input type="text" id="certificateInput" placeholder="e.g., AWS Certified Developer">
+                        <button type="button" class="btn-add" onclick="addCertificate()">Add</button>
+                    </div>
+                    <div class="skills-list" id="certificatesList"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Previous</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Documents Upload -->
+            <div class="form-step" id="step4">
+                <h2 class="step-title">Upload Documents</h2>
+                
+                <div class="upload-section">
+                    <h3>Resume <span class="required">*</span></h3>
+                    <div class="file-drop-zone" id="resumeDropZone">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drag & drop your resume here</p>
+                        <button type="button" class="btn-upload" onclick="document.getElementById('resumeInput').click()">Choose File</button>
+                        <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" hidden>
+                    </div>
+                    <div class="file-preview" id="resumePreview"></div>
+                </div>
+
+                <div class="upload-section">
+                    <h3>CV (Optional)</h3>
+                    <div class="file-drop-zone" id="cvDropZone">
+                        <p>Upload CV if different from resume</p>
+                        <button type="button" class="btn-upload" onclick="document.getElementById('cvInput').click()">Choose File</button>
+                        <input type="file" id="cvInput" accept=".pdf,.doc,.docx" hidden>
+                    </div>
+                    <div class="file-preview" id="cvPreview"></div>
+                </div>
+
+                <div class="upload-section">
+                    <h3>Certificates (Optional)</h3>
+                    <div class="file-drop-zone" id="certificatesDropZone">
+                        <p>Upload certificate documents</p>
+                        <button type="button" class="btn-upload" onclick="document.getElementById('certificatesInput').click()">Choose Files</button>
+                        <input type="file" id="certificatesInput" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+                    </div>
+                    <div class="file-preview" id="certificatesPreview"></div>
+                </div>
+
+                <div class="upload-section">
+                    <h3>Other Documents (Optional)</h3>
+                    <div class="file-drop-zone" id="otherDropZone">
+                        <p>Any other relevant documents</p>
+                        <button type="button" class="btn-upload" onclick="document.getElementById('otherInput').click()">Choose Files</button>
+                        <input type="file" id="otherInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple hidden>
+                    </div>
+                    <div class="file-preview" id="otherPreview"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Previous</button>
+                    <button type="button" class="btn btn-success" onclick="submitProfile()">Complete Profile</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="profileStore.js"></script>
+    <script src="resumeStore.js"></script>
+    <script src="profile-setup.js"></script>
+</body>
+</html>

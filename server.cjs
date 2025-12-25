@@ -9,6 +9,7 @@
  * - This server only processes the request, calls an AI model, and returns a response.
  */
 
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -17,7 +18,10 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Initialize Gemini AI (Google's free API)
-const GEMINI_API_KEY = 'AIzaSyBV0g-vHeNu2tuPjmrbH_20Y7ccMHK5MBE';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not set in .env file!');
+}
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 

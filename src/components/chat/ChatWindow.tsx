@@ -70,28 +70,31 @@ export const ChatWindow: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Convert chat history to Gemini format (excluding the current message and initial greeting)
-      const conversationHistory = messages
-        .filter(msg => 
-          msg.id !== userMessage.id && 
-          msg.content !== 'Hello! I\'m your AI Assistant powered by Google Gemini. How can I help you today?'
-        )
-        .map(msg => ({
-          role: msg.type === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.content }]
-        }));
-
-      // Call the Supabase edge function
-      const { data: responseData, error: functionError } = await supabase.functions.invoke('gemini-chat', {
-        body: {
+      // Call the local Node.js backend server
+      const response = await fetch('http://localhost:8080/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           message: content,
-          conversationHistory
-        }
+          conversationHistory: messages
+            .filter(msg => 
+              msg.id !== userMessage.id && 
+              msg.content !== 'Hello! I\'m your AI Assistant powered by Google Gemini. How can I help you today?'
+            )
+            .map(msg => ({
+              role: msg.type === 'user' ? 'user' : 'model',
+              parts: [{ text: msg.content }]
+            }))
+        })
       });
 
-      if (functionError) {
-        throw new Error(functionError.message);
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
       }
+      
+      const responseData = await response.json();
       
       if (responseData.error) {
         throw new Error(responseData.error);
@@ -99,7 +102,7 @@ export const ChatWindow: React.FC = () => {
       
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: responseData.response,
+        content: responseData.response || responseData.message,
         type: 'ai',
         timestamp: new Date()
       };
@@ -116,9 +119,9 @@ export const ChatWindow: React.FC = () => {
       setMessages(prev => [...prev, errorMessage]);
       
       toast({
-        title: "Error",
+        title: "Notice",
         description: "Failed to get AI response. Please try again.",
-        variant: "destructive"
+        variant: "neon-blue"
       });
     } finally {
       setIsLoading(false);

@@ -26,6 +26,16 @@ export const useAdminAuth = (redirectPath?: string) => {
         return;
       }
 
+      // 🔐 SUPER ADMIN: Direct admin access for specific email
+      const SUPER_ADMIN_EMAIL = 'Nishantma05@gmail.com';
+      
+      if (user.email?.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+        console.log('✅ Super Admin access granted:', user.email);
+        setIsAdmin(true);
+        setIsLoading(false);
+        return;
+      }
+
       // Check if user has admin role using the secure function
       const { data, error } = await supabase.rpc('current_user_is_admin');
 

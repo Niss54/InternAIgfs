@@ -62,25 +62,75 @@ const Internships = () => {
     const lastAutoApply = localStorage.getItem('lastAutoApplyDate');
     const today = new Date().toDateString();
     
+    // Get user profile for smart matching
+    const profileStore = (window as any).profileStore;
+    const userProfile = profileStore?.getProfile();
+    
+    if (!userProfile || !userProfile.skills || userProfile.skills.length === 0) {
+      toast({
+        title: "Profile Incomplete",
+        description: "Please complete your profile with skills to use smart auto-apply!",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Get all internships
+    const allInternships = (window as any).internshipData?.getAllInternships() || [];
+    
+    if (allInternships.length === 0) {
+      toast({
+        title: "No Internships Available",
+        description: "Unable to load internships. Please refresh the page.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Use smart matching to find best internships (70% match minimum, top 5)
+    const smartMatches = (window as any).skillMatchingEngine?.getSmartInternshipMatches(
+      userProfile,
+      allInternships,
+      70, // Minimum 70% match score
+      5   // Top 5 matches
+    );
+    
+    if (!smartMatches || smartMatches.length === 0) {
+      toast({
+        title: "No Matching Internships Found",
+        description: "No internships match your profile (70%+ required). Try updating your skills.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Check if user has used free daily auto apply
     if (lastAutoApply !== today) {
-      // Free daily auto apply (first 5 internships)
-      const firstFive = filteredInternships.slice(0, 5);
-      const firstFiveIds = firstFive.map(i => i.id);
+      // Free daily smart auto apply (top 5 matches)
+      const matchedIds = smartMatches.map((match: any) => 
+        parseInt(match.internship.id.replace('int', ''))
+      );
       
-      setAppliedInternships(prev => [...new Set([...prev, ...firstFiveIds])]);
+      setAppliedInternships(prev => [...new Set([...prev, ...matchedIds])]);
       localStorage.setItem('lastAutoApplyDate', today);
       
+      const topMatches = smartMatches.slice(0, 3).map((m: any) => 
+        `${m.internship.title} (${m.score}% match)`
+      ).join(', ');
+      
       toast({
-        title: "Auto-Apply Complete! 🎉",
-        description: `Successfully auto-applied to ${firstFive.length} internships for free!`,
+        title: "Smart Auto-Apply Complete! 🎯",
+        description: `Applied to ${smartMatches.length} matching internships: ${topMatches}`,
       });
     } else {
       // Already used free daily auto apply - need tokens
       const tokensPerInternship = 10;
-      const availableInternships = filteredInternships.filter(i => !appliedInternships.includes(i.id));
+      const availableMatches = smartMatches.filter((match: any) => {
+        const internId = parseInt(match.internship.id.replace('int', ''));
+        return !appliedInternships.includes(internId);
+      });
       const maxApplications = Math.floor(aiTokens / tokensPerInternship);
-      const possible = Math.min(maxApplications, availableInternships.length);
+      const possible = Math.min(maxApplications, availableMatches.length);
       
       if (aiTokens < tokensPerInternship) {
         toast({

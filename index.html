@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Redirect to Splash Screen on First Visit -->
+    <script>
+      // Check if user is visiting for the first time
+      if (!sessionStorage.getItem('visited_home')) {
+        sessionStorage.setItem('visited_home', 'true');
+        window.location.href = './splash.html';
+      }
+    </script>
+    
    <!-- Primary Meta Tags -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,7 +55,7 @@
     "@type": "Person",
     "name": "Nishant Maurya",
     "alternateName": ["Niss Maurya", "Nissh", "Niss Visuals"],
-    "jobTitle": "Founder & CEO of Limpio, Owner of Nissh Innovation",
+    "jobTitle": "Founder & CEO of Limpio, Owner of Nissh Innovation , Creative Technologist , UI/UX Designer , Visual Artist, content creator, reel maker , editor , photographer , videographer,singer",
     "url": "https://nissh.info",
     "sameAs": [
       "https://www.instagram.com/niss_9854",
@@ -55,7 +64,8 @@
       "https://t.me/Nissvisuals"
     ]
   },
-  "description": "Lucid Onboarding Glow is an experimental project by Nishant Maurya under Nissh Innovation, showcasing modern onboarding UI and smooth transitions using web animation.",
+  "description": "InternAI is an open Innovation project by Nishant Maurya under Nissh Innovation, showcasing modern onboarding 
+  UI and smooth transitions using web animation a combination of AI , cloud  components and  .",
   "genre": "Web Design, UI/UX",
   "keywords": "Onboarding UI, Web Design, Interactive Animation, Nishant Maurya, Nissh Innovation, Limpio"
 }
@@ -65,6 +75,12 @@
 
   <body>
     <div id="root"></div>
+    <!-- Load JavaScript modules for localStorage management -->
+    <script src="/profileStore.js"></script>
+    <script src="/resumeStore.js"></script>
+    <script src="/chatStore.js"></script>
+    <script src="/skillMatchingEngine.js"></script>
+    <script src="/internshipData.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

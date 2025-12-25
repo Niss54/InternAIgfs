@@ -2,13 +2,25 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { 
   Clock, CheckCircle, Calendar, MapPin, DollarSign, 
-  Filter, Search, Eye, MessageCircle, ExternalLink
+  Filter, Search, Eye, MessageCircle, ExternalLink, Video, Link as LinkIcon
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const AppliedInternships = () => {
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<any>(null);
+  const { toast } = useToast();
   
   const applications = [
     {
@@ -123,6 +135,49 @@ const AppliedInternships = () => {
     rejected: applications.filter(app => app.status === 'rejected').length
   };
 
+  // Handler functions
+  const handleViewDetails = (application: any) => {
+    setSelectedApplication(application);
+    setShowDetailsDialog(true);
+  };
+
+  const handleJoinInterview = (application: any) => {
+    // Generate mock interview link
+    const interviewLink = `https://meet.google.com/${application.company.toLowerCase()}-${application.id}-interview`;
+    window.open(interviewLink, '_blank');
+    toast({
+      title: "Opening Interview Link",
+      description: `Joining interview for ${application.role} at ${application.company}`,
+    });
+  };
+
+  const handleAddToCalendar = (application: any) => {
+    // Create calendar event
+    const eventTitle = encodeURIComponent(`Interview: ${application.role} at ${application.company}`);
+    const eventDetails = encodeURIComponent(application.nextStep);
+    const eventDate = new Date();
+    eventDate.setDate(eventDate.getDate() + 10); // 10 days from now
+    const startTime = eventDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${eventDetails}&dates=${startTime}/${startTime}`;
+    window.open(calendarUrl, '_blank');
+    
+    toast({
+      title: "Added to Calendar",
+      description: `Interview scheduled for ${application.role}`,
+    });
+  };
+
+  const handleViewJob = (application: any) => {
+    // Generate mock job posting link
+    const jobLink = `https://careers.${application.company.toLowerCase()}.com/jobs/${application.id}`;
+    window.open(jobLink, '_blank');
+    toast({
+      title: "Opening Job Posting",
+      description: `Viewing full details for ${application.role}`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -214,24 +269,44 @@ const AppliedInternships = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                    <div className="flex gap-2 flex-wrap">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-muted-foreground hover:text-primary"
+                        onClick={() => handleViewDetails(application)}
+                      >
                         <Eye className="w-4 h-4 mr-1" />
                         View Details
                       </Button>
                       {application.status === 'interview' && (
                         <>
-                          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-accent">
-                            <MessageCircle className="w-4 h-4 mr-1" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-muted-foreground hover:text-accent"
+                            onClick={() => handleJoinInterview(application)}
+                          >
+                            <Video className="w-4 h-4 mr-1" />
                             Join Interview
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-muted-foreground hover:text-primary"
+                            onClick={() => handleAddToCalendar(application)}
+                          >
                             <Calendar className="w-4 h-4 mr-1" />
                             Add to Calendar
                           </Button>
                         </>
                       )}
-                      <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-muted-foreground hover:text-primary"
+                        onClick={() => handleViewJob(application)}
+                      >
                         <ExternalLink className="w-4 h-4 mr-1" />
                         View Job
                       </Button>
@@ -266,6 +341,74 @@ const AppliedInternships = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Details Dialog */}
+      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center text-xl font-bold">
+                {selectedApplication?.logo}
+              </div>
+              {selectedApplication?.role}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedApplication?.company} • {selectedApplication?.location}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedApplication && (
+            <div className="space-y-4 py-4">
+              <div>
+                <h3 className="font-semibold mb-2">Job Description</h3>
+                <p className="text-muted-foreground">{selectedApplication.description}</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-semibold mb-1">Stipend</h3>
+                  <p className="text-muted-foreground">{selectedApplication.stipend}</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Applied Date</h3>
+                  <p className="text-muted-foreground">
+                    {new Date(selectedApplication.appliedDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-1">Status</h3>
+                <div className="mt-2">
+                  {getStatusBadge(selectedApplication.status)}
+                </div>
+              </div>
+
+              <div className="p-4 bg-secondary/30 rounded-lg border border-border/50">
+                <h3 className="font-semibold mb-1">Next Step</h3>
+                <p className="text-muted-foreground">{selectedApplication.nextStep}</p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            {selectedApplication?.status === 'interview' && (
+              <Button onClick={() => handleJoinInterview(selectedApplication)} className="btn-neon">
+                <Video className="w-4 h-4 mr-2" />
+                Join Interview
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => handleViewJob(selectedApplication)}>
+              <ExternalLink className="w-4 h-4 mr-2" />
+              View Full Posting
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

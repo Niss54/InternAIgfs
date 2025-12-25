@@ -23,7 +23,9 @@ import {
   Laptop,
   Shield,
   Sparkles,
-  Brain
+  Brain,
+  FileText,
+  Palette
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,8 +41,10 @@ const DashboardLayout = () => {
     { icon: Briefcase, label: "Applications", path: "/dashboard/applied" },
     { icon: Calendar, label: "Interviews", path: "/dashboard/interviews" },
     { icon: Bot, label: "AI Assistant", path: "/dashboard/ai" },
-    { icon: Brain, label: "AI Suggestions", path: "/ai-suggestions.html" },
-    { icon: Users, label: "Networking", path: "/dashboard/networking" },
+    { icon: Brain, label: "AI Suggestions", path: "/dashboard/ai-suggestions" },
+    { icon: FileText, label: "Resume Generator", path: "/dashboard/resume-generator" },
+    { icon: Palette, label: "Portfolio Builder", path: "/dashboard/portfolio-builder" },
+    { icon: Users, label: "Networking 🔜", path: "/dashboard/networking", badge: "Coming Soon" },
     { icon: Star, label: "Referrals", path: "/dashboard/referrals" },
     { icon: Award, label: "Certifications", path: "/dashboard/certifications" },
     { icon: Laptop, label: "Freelance Gigs", path: "/dashboard/freelance" },
@@ -81,10 +85,10 @@ const DashboardLayout = () => {
 
         {/* Sidebar */}
         <aside className={cn(
-          "fixed left-0 top-[72px] h-[calc(100vh-72px)] w-64 bg-card border-r border-border transition-transform duration-300 z-40 overflow-y-auto",
+          "fixed left-0 top-[72px] h-[calc(100vh-72px)] w-64 bg-card border-r border-border transition-transform duration-300 z-40 overflow-y-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-transparent",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}>
-          <nav className="p-4 space-y-2 pb-8">
+          <nav className="p-4 space-y-2 pb-8 min-h-[120vh]">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;

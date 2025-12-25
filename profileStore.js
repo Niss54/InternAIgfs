@@ -32,14 +32,21 @@ function getProfile() {
 /**
  * Save user profile to localStorage
  * @param {Object} profile - User profile object
- * @param {string} profile.id - User identifier (required)
+ * @param {string} profile.id - User identifier (email - required)
  * @param {string} profile.name - User name (required)
- * @param {string} profile.collegeName - College name
- * @param {string} profile.educationStatus - Education status (e.g., "Undergraduate", "Graduate", "Completed")
- * @param {string} profile.branch - Branch/Major
+ * @param {string} profile.email - Email address (required)
+ * @param {string} profile.role - Target role/position (required)
+ * @param {string[]} profile.skills - List of skills (max 6)
+ * @param {string} profile.address - Address (optional)
+ * @param {string} profile.branch - Branch/Major (required)
+ * @param {string} profile.tenthMarks - 10th marks/percentage (optional)
+ * @param {string} profile.twelfthMarks - 12th marks/percentage (optional)
+ * @param {string} profile.graduationStatus - "Completed"/"Undergraduate"/"Graduate" (required)
+ * @param {string} profile.instituteName - College/University name (required)
+ * @param {string} profile.courseName - Degree/Course name (required)
  * @param {string[]} profile.achievements - List of achievements
+ * @param {string[]} profile.certificates - List of certificates
  * @param {string[]} profile.targetRoles - List of target internship roles
- * @param {string[]} profile.skills - List of skills
  * @param {string} profile.shortDescription - Short bio (2-3 lines)
  * @returns {boolean} True if saved successfully, false otherwise
  */
@@ -61,17 +68,38 @@ function saveProfile(profile) {
             return false;
         }
         
+        if (!profile.email || typeof profile.email !== 'string') {
+            console.error('Profile must have an "email" field (string)');
+            return false;
+        }
+        
+        // Validate skills (max 6)
+        let skills = Array.isArray(profile.skills) ? profile.skills : [];
+        if (skills.length > 6) {
+            console.warn('Maximum 6 skills allowed. Truncating...');
+            skills = skills.slice(0, 6);
+        }
+        
         // Ensure array fields are arrays
         const sanitizedProfile = {
             id: profile.id,
             name: profile.name,
-            collegeName: profile.collegeName || '',
-            educationStatus: profile.educationStatus || '',
+            email: profile.email,
+            role: profile.role || '',
+            skills: skills,
+            address: profile.address || '',
             branch: profile.branch || '',
+            tenthMarks: profile.tenthMarks || '',
+            twelfthMarks: profile.twelfthMarks || '',
+            graduationStatus: profile.graduationStatus || '',
+            instituteName: profile.instituteName || '',
+            courseName: profile.courseName || '',
             achievements: Array.isArray(profile.achievements) ? profile.achievements : [],
+            certificates: Array.isArray(profile.certificates) ? profile.certificates : [],
             targetRoles: Array.isArray(profile.targetRoles) ? profile.targetRoles : [],
-            skills: Array.isArray(profile.skills) ? profile.skills : [],
-            shortDescription: profile.shortDescription || ''
+            shortDescription: profile.shortDescription || '',
+            collegeName: profile.instituteName || '', // For backward compatibility
+            educationStatus: profile.graduationStatus || '' // For backward compatibility
         };
         
         const profileJSON = JSON.stringify(sanitizedProfile);

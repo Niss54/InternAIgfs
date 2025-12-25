@@ -77,7 +77,7 @@ export const LeaderboardWidget = () => {
         <CardDescription>Top performers this month</CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
-        <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+        <div className="space-y-2 max-h-[700px] overflow-y-auto pr-2">
           {mockLeaderboard.map((entry) => (
             <div 
               key={entry.user_id}

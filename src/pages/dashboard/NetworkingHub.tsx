@@ -51,15 +51,26 @@ const NetworkingHub = () => {
   const [activeGroup, setActiveGroup] = useState<Group | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showGroupDetails, setShowGroupDetails] = useState(false);
   const [showAddMember, setShowAddMember] = useState(false);
-  const [newMemberData, setNewMemberData] = useState({ name: '', phone: '' });
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [newGroupData, setNewGroupData] = useState({
+    name: '',
+    description: '',
+    logo: ''
+  });
+  
+  const [newMemberData, setNewMemberData] = useState({
+    name: '',
+    phone: ''
+  });
 
+  // Load groups on mount
   useEffect(() => {
     console.log('NetworkingHub mounted');
     try {
