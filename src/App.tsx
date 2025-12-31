@@ -54,7 +54,8 @@ import PortfolioBuilder from "./pages/PortfolioBuilder";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [showIntro, setShowIntro] = useState(true);
+  // Disable intro by default so app opens directly to the homepage
+  const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
     // Check if user has already watched the intro
