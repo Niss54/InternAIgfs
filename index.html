@@ -7,7 +7,8 @@
     <script>
       // Only redirect to splash if the user hasn't visited AND skip flag is not present
       try {
-        const skip = location.search.indexOf('skip_splash') !== -1;
+        // Splash redirect disabled: force skip so site opens directly to the app
+        const skip = true || location.search.indexOf('skip_splash') !== -1;
         if (!skip && !sessionStorage.getItem('visited_home')) {
           sessionStorage.setItem('visited_home', 'true');
           window.location.href = './splash.html';
