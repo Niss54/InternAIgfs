@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Redirect to Splash Screen on First Visit -->
+    <!-- Redirect to Splash Screen on First Visit
+         NOTE: For debugging you can add ?skip_splash=1 to the URL to bypass this redirect
+    -->
     <script>
-      // Check if user is visiting for the first time
-      if (!sessionStorage.getItem('visited_home')) {
-        sessionStorage.setItem('visited_home', 'true');
-        window.location.href = './splash.html';
+      // Only redirect to splash if the user hasn't visited AND skip flag is not present
+      try {
+        const skip = location.search.indexOf('skip_splash') !== -1;
+        if (!skip && !sessionStorage.getItem('visited_home')) {
+          sessionStorage.setItem('visited_home', 'true');
+          window.location.href = './splash.html';
+        }
+      } catch (e) {
+        // If anything fails, avoid blocking the page
+        console.warn('Splash redirect check failed', e);
       }
     </script>
     
@@ -75,12 +83,22 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
+    </script>
     <!-- Load JavaScript modules for localStorage management -->
     <script src="/profileStore.js"></script>
     <script src="/resumeStore.js"></script>
     <script src="/chatStore.js"></script>
     <script src="/skillMatchingEngine.js"></script>
     <script src="/internshipData.js"></script>
-    <script type="module" src="/src/main.tsx"></script>
+      <!-- Local scripts above. Add Vite React entry so app mounts to #root -->
+      <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

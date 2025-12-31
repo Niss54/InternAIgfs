@@ -100,7 +100,7 @@ const Dashboard = () => {
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link to="/about">
+            <Link to="/dashboard/about">
               <MessageCircle className="w-4 h-4 mr-2" />
               About
             </Link>

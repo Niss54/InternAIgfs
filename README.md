@@ -5,105 +5,71 @@ InternAI is a modern, AI-powered platform designed to help students and job seek
 - AI chat assistant for resume and career queries
 - Resume upload and analysis
 - User profile management
-- Persistent chat history (localStorage)
-- Admin panel (for privileged users)
-- Modern onboarding with animated intro video
+***
 
-**Note:** Deployment pending. This project is currently in hackathon/demo mode and runs locally.
+## 1. One-liner
+AI-assisted platform that helps students discover internships, improve resumes, and get data-driven career guidance.
 
+## 2. Problem statement
+Finding relevant internships and preparing an application is time-consuming for early-career students. Many candidates lack personalised guidance for resume improvement, interview readiness, and targeted internship discovery. This results in missed opportunities and inefficient job-search workflows.
 
+## 3. Solution overview
+InternAI provides a prototype dashboard combining internship discovery, resume analysis, and an AI chat assistant that offers personalised recommendations. The prototype focuses on a smooth onboarding and demo-ready experience so evaluators can quickly try core functionality.
 
-## 🛠️ Tech Stack
-- **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn-ui
-- **Backend:** Node.js, Express, Google Gemini AI API (stateless, no DB)
-- **Storage:** Browser localStorage (profile, resume, chat)
-- **Other:** Custom splash screen, file upload, chatStore/profileStore/resumeStore modules
+## 4. Key features
+- AI-powered resume analysis and suggestions
+- Personalized internship recommendations and search
+- Dashboard with stats, applications, and activity
+- Networking hub for community posts and groups (prototype)
+- Referrals and basic referral tracking dashboard
+- Local demo mode with sample data and simplified auth
 
----
+## 5. Prototype scope
+This repository contains a hackathon prototype: an interactive frontend, demo backend endpoints, local storage for profiles/resumes/chats, and admin scaffolding. It is intended for evaluation and not for production use.
 
-## ⚙️ How It Works (Agent Flow)
-1. **User lands on site:**
-   - Splash screen with intro video plays (only on first visit)
-   - Auto-redirects to homepage
-2. **User uploads resume:**
-   - Drag & drop or select file (PDF/DOC/DOCX/TXT/JPG/PNG)
-   - File metadata and (if possible) text extracted and saved in localStorage
-3. **User sets up profile:**
-   - Profile info (name, college, branch, skills, etc.) saved in localStorage
-4. **User chats with AI:**
-   - Chat history is saved in localStorage
-   - Each message (with profile + resume) is sent to backend `/api/ai/chat`
-   - Backend builds a prompt and calls Gemini AI (or returns demo response)
-   - AI reply is shown in chat and saved in history
-5. **Admin panel:**
-   - Special routes for admin login and dashboard (if enabled)
-   - Admin can manage users, see analytics, etc. (if implemented)
+## 6. Tech stack
+- Frontend: React, Vite, TypeScript, Tailwind CSS
+- UI: shadcn/ui components, Lucide icons
+- Backend (demo): Node.js / Express (stateless endpoints)
+- Storage: Browser localStorage for profile, resume and chat
 
----
+## 7. How to run locally
+1. Clone the repo and enter the project directory.
 
-## 🧩 Project Features & Structure
-- **Splash Screen:** `splash.html` with full-screen intro video
-- **Homepage:** Modern UI, responsive, Tailwind CSS
-- **AI Suggestions Page:** `ai-suggestions.html` for chat and resume upload
-- **Profile Management:** `profileStore.js` (localStorage)
-- **Resume Management:** `resumeStore.js` (localStorage)
-- **Chat History:** `chatStore.js` (localStorage)
-- **Backend:** `server.cjs` (Express, Gemini AI integration)
-- **Admin Panel:** (if enabled) `/admin-login`, `/admin-dashboard`
-- **.env:** All API keys and secrets (never committed)
-- **.gitignore:** Protects sensitive files
-
----
-
-## 🚦 Deployment Status
-**Deployment pending.**
-- Project runs locally via Vite dev server (`npm run dev`)
-- Backend runs via Node.js (`node server.cjs`)
-- For production, deploy frontend (Netlify/Vercel) and backend (Render/Heroku)
-
----
-
-## 💡 How to Run Locally
-```sh
-# 1. Clone the repository
-git clone <YOUR_GIT_URL>
-cd <YOUR_PROJECT_NAME>
-
-# 2. Install dependencies
+```powershell
+git clone <REPO_URL>
+cd <PROJECT_FOLDER>
 npm install
-
-# 3. Start frontend (Vite)
-npm run dev
-
-# 4. Start backend (in another terminal)
-node server.cjs
-
-# 5. Open in browser
-http://localhost:8080/
 ```
 
----
+2. Start the frontend (Vite dev server):
 
-## 🏆 What Works
-- [x] AI chat with Gemini integration (or demo mode)
-- [x] Resume upload and analysis (localStorage)
-- [x] User profile management (localStorage)
-- [x] Persistent chat history (localStorage)
-- [x] Splash screen with intro video
-- [x] Modern, responsive UI
-- [x] Admin panel (if enabled)
-- [x] No database required (stateless backend)
+```powershell
+npm run dev
+```
 
----
+3. (Optional) Start the demo backend in a separate terminal if you plan to call server endpoints:
 
-## ❓ Need Help?
-- Check browser console for errors
-- See `SPLASH_SCREEN_GUIDE.md` for splash setup
-- See `BACKEND_README.md` for backend/API setup
-- For issues, contact project maintainer
+```powershell
+node server.cjs
+```
 
----
+4. Open the local URL shown by Vite (commonly `http://localhost:5173/` or `http://localhost:8080/`).
 
-**Hackathon Submission – All core features working locally!**
+## 8. Future scope
+- Add persistent backend storage (e.g. Supabase or Postgres)
+- Securely integrate production-grade AI APIs with proper rate-limiting
+- Implement full authentication & authorization (JWT / OAuth)
+- Add real-time networking (websockets) and notifications
+- Add E2E tests and CI/CD for production readiness
 
+## 9. Team / Author
+- Team: Syntrix
+- Built by: Nishant Maurya
+- Role: Founder & Developer
+
+## 10. Disclaimer
+This project was developed as part of a hackathon / innovation challenge and is a prototype for demonstration and evaluation purposes only.
+
+***
 

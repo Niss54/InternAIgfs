@@ -63,7 +63,7 @@ const Index = () => {
                   </Link>
                 </Button>
                 <Button asChild className="btn-neon" variant="outline">
-                  <Link to="/portfolio-builder">
+                  <Link to="/dashboard/portfolio-builder">
                     <Globe className="w-5 h-5 mr-2" />
                     {t('home.hero.build_portfolio')}
                   </Link>
@@ -157,7 +157,7 @@ const Index = () => {
                 professional templates to showcase your work and stand out from the crowd.
               </p>
               <Button asChild className="btn-neon">
-                <Link to="/portfolio-builder">
+                <Link to="/dashboard/portfolio-builder">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Build Portfolio
                 </Link>

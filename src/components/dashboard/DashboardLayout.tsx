@@ -44,7 +44,7 @@ const DashboardLayout = () => {
     { icon: Brain, label: "AI Suggestions", path: "/dashboard/ai-suggestions" },
     { icon: FileText, label: "Resume Generator", path: "/dashboard/resume-generator" },
     { icon: Palette, label: "Portfolio Builder", path: "/dashboard/portfolio-builder" },
-    { icon: Users, label: "Networking 🔜", path: "/dashboard/networking", badge: "Coming Soon" },
+    { icon: Users, label: "Networking", path: "/dashboard/networking" },
     { icon: Star, label: "Referrals", path: "/dashboard/referrals" },
     { icon: Award, label: "Certifications", path: "/dashboard/certifications" },
     { icon: Laptop, label: "Freelance Gigs", path: "/dashboard/freelance" },

@@ -93,7 +93,8 @@ const Navbar = () => {
                 <NotificationBell />
               </div>
             )}
-            {!user ? (
+            {/* In development on localhost, treat as logged-in when auth is bypassed */}
+            {(!user && !(process.env.NODE_ENV !== 'production' && window.location.hostname === 'localhost')) ? (
               <Button asChild className="btn-neon hover:bg-primary/10 hover:text-primary hover:border-primary active:bg-primary/90 transition-all duration-200">
                 <Link to="/login">{t('nav.login')}</Link>
               </Button>
@@ -106,7 +107,7 @@ const Navbar = () => {
                   <div className="w-7 h-7 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
                     <UserCircle className="w-4 h-4 text-primary-foreground" />
                   </div>
-                  <span className="text-foreground font-medium text-sm">User</span>
+                  <span className="text-foreground font-medium text-sm">{user?.displayName || 'User'}</span>
                   <ChevronDown className="w-3 h-3 text-foreground" />
                 </div>
                 
@@ -121,7 +122,16 @@ const Navbar = () => {
                     </Link>
                     <div className="h-px bg-border/50 my-2"></div>
                     <button 
-                      onClick={() => signOut()}
+                      onClick={() => {
+                        try {
+                          if (signOut) signOut();
+                        } catch (e) {
+                          // fallback: reload to clear dev state
+                          // eslint-disable-next-line no-console
+                          console.warn('Sign out failed or not available', e);
+                          window.location.reload();
+                        }
+                      }}
                       className="flex items-center gap-3 p-3 text-foreground hover:bg-destructive/10 hover:text-destructive rounded transition-colors w-full text-left"
                     >
                       <LogOut className="w-4 h-4" />

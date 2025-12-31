@@ -32,7 +32,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // DEVELOPMENT: force dev bypass on so the app auto-signs as Dev User
+  // Set to `true` to auto-login every visitor as the Dev User (use only for demo/submission)
+  const DISABLE_AUTH_BYPASS = true;
+
   useEffect(() => {
+    if (DISABLE_AUTH_BYPASS) {
+      // Provide a lightweight fake user object for local/dev testing.
+      const fakeUser: any = {
+        uid: 'dev-user-1',
+        email: 'dev@internai.local',
+        displayName: 'Dev User',
+        // minimal token function in case code calls it
+        getIdToken: async () => 'dev-token'
+      };
+      setUser(fakeUser as unknown as FirebaseUser);
+      setLoading(false);
+      return;
+    }
+
     // Set up Firebase auth state listener
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       // Auth state updated

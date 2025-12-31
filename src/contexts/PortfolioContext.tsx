@@ -69,6 +69,7 @@ export interface PortfolioData {
     description: string;
     keywords: string[];
   };
+  enabledSections?: Record<string, boolean>;
 }
 
 interface PortfolioContextType {
@@ -89,6 +90,7 @@ interface PortfolioContextType {
   updateEducation: (id: string, education: Partial<EducationData>) => void;
   removeEducation: (id: string) => void;
   setTheme: (theme: ThemeType) => void;
+  setSectionEnabled: (section: string, enabled: boolean) => void;
   setSelectedElement: (element: string | null) => void;
   publishPortfolio: () => void;
   exportStatic: () => void;
@@ -134,8 +136,29 @@ export const PortfolioProvider: React.FC<PortfolioProviderProps> = ({
       title: 'Your Portfolio',
       description: 'Professional portfolio showcasing my work and experience',
       keywords: []
+    },
+    enabledSections: {
+      home: true,
+      about: true,
+      skills: true,
+      services: true,
+      portfolio: true,
+      reviews: true,
+      achievements: true,
+      certifications: true,
+      contact: true
     }
   });
+
+  const setSectionEnabled = useCallback((section: string, enabled: boolean) => {
+    setData(prev => ({
+      ...prev,
+      enabledSections: {
+        ...prev.enabledSections,
+        [section]: enabled
+      }
+    }));
+  }, []);
 
   const updateProfile = useCallback((profile: Partial<PortfolioData['profile']>) => {
     setData(prev => ({
@@ -271,7 +294,8 @@ export const PortfolioProvider: React.FC<PortfolioProviderProps> = ({
     setSelectedElement,
     publishPortfolio,
     exportStatic,
-    generatePDF
+    generatePDF,
+    setSectionEnabled
   };
 
   return (

@@ -280,15 +280,7 @@ function getMatchExplanation(matchDetails) {
     return explanations.join(' | ');
 }
 
-// Export for use in other modules
-export const skillMatchingEngine = {
-    calculateMatchScore,
-    getSmartInternshipMatches,
-    getMatchCategory,
-    getMatchExplanation
-};
-
-// Also export for window global access
+// For direct browser usage attach to window (modules should import from a module-aware source)
 if (typeof window !== 'undefined') {
     window.skillMatchingEngine = {
         calculateMatchScore,

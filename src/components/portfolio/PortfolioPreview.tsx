@@ -20,6 +20,7 @@ import {
 
 export const PortfolioPreview: React.FC = () => {
   const { data, selectedElement, setSelectedElement } = usePortfolio();
+  const enabled = data.enabledSections || {};
 
   const getThemeClasses = () => {
     switch (data.theme) {
@@ -53,77 +54,82 @@ export const PortfolioPreview: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6"
-          >
-            <div className="space-y-4">
-              <motion.h1 
-                className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                {data.profile.name}
-              </motion.h1>
-              <motion.h2 
-                className="text-xl md:text-2xl text-primary font-medium"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                {data.profile.title}
-              </motion.h2>
-              <motion.p 
-                className="text-muted-foreground text-lg leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                {data.profile.bio}
-              </motion.p>
-            </div>
-            
-            <motion.div 
-              className="flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              <Button size="lg" className="gap-2">
-                <Mail className="w-4 h-4" />
-                Contact Me
-              </Button>
-              <Button variant="outline" size="lg" className="gap-2">
-                <Download className="w-4 h-4" />
-                Download Resume
-              </Button>
-            </motion.div>
-
-            {/* Contact Info */}
-            <motion.div 
-              className="flex flex-wrap gap-4 text-sm text-muted-foreground"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-            >
-              {data.profile.email && (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  {data.profile.email}
-                </div>
-              )}
-              {data.profile.phone && (
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  {data.profile.phone}
-                </div>
-              )}
-              {data.profile.location && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  {data.profile.location}
-                </div>
-              )}
+            return (
+              <div className={`w-full h-full overflow-y-auto ${getThemeClasses()}`}>
+                {/* Home (Hero) Section */}
+                {enabled.home !== false && (
+                  <section 
+                    className={`relative min-h-screen flex items-center justify-center p-8 cursor-pointer transition-all duration-200 ${
+                      selectedElement === 'hero' ? 'ring-2 ring-primary ring-offset-2' : ''
+                    }`}
+                    onClick={() => handleElementClick('hero')}
+                  >
+                    <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                      <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="space-y-6"
+                      >
+                        <div className="space-y-4">
+                          <motion.h1 
+                            className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                          >
+                            {data.profile.name}
+                          </motion.h1>
+                          <motion.h2 
+                            className="text-xl md:text-2xl text-primary font-medium"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                          >
+                            {data.profile.title}
+                          </motion.h2>
+                          <motion.p 
+                            className="text-muted-foreground text-lg leading-relaxed"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                          >
+                            {data.profile.bio}
+                          </motion.p>
+                        </div>
+                        {/* ...existing code... */}
+                      </motion.div>
+                      {/* ...existing code... */}
+                    </div>
+                  </section>
+                )}
+                {/* Portfolio/Projects Section */}
+                {enabled.portfolio !== false && (
+                  <section 
+                    className={`py-20 px-8 cursor-pointer transition-all duration-200 ${
+                      selectedElement === 'projects' ? 'ring-2 ring-primary ring-offset-2' : ''
+                    }`}
+                    onClick={() => handleElementClick('projects')}
+                  >
+                    <div className="container mx-auto">
+                      <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-12"
+                      >
+                        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                          Featured Projects
+                        </h2>
+                        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                          A showcase of my recent work and creative projects
+                        </p>
+                      </motion.div>
+                      {/* ...existing code... */}
+                    </div>
+                  </section>
+                )}
+                {/* TODO: Add similar conditional rendering for About, Skills, Services, Reviews, Achievements, Certifications, Contact sections */}
             </motion.div>
 
             {/* Social Links */}

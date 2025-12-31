@@ -450,15 +450,7 @@ function getInternshipsByCategory(category) {
     return dummyInternships.filter(internship => internship.category === category);
 }
 
-// Export for use in other files
-export const internshipData = {
-    getAllInternships,
-    getInternshipById,
-    getInternshipsByCategory,
-    internships: dummyInternships
-};
-
-// Also export for window global access
+// If using modules, import/export from a module-aware file. For direct browser usage, attach to window:
 if (typeof window !== 'undefined') {
     window.internshipData = {
         getAllInternships,

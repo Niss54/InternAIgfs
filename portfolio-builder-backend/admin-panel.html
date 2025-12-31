@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Admin Panel</title>
+  <style>
+    body { background: #0a192f; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 40px auto; background: rgba(20,30,60,0.95); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37); padding: 32px; }
+    h1 { color: #64ffda; }
+    .portfolio-list { margin-top: 32px; }
+    .portfolio-card { background: rgba(40,60,100,0.85); border-radius: 10px; margin-bottom: 20px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .portfolio-card .status { font-size: 0.95em; margin-bottom: 8px; }
+    .actions button { margin-right: 10px; padding: 6px 16px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+    .approve { background: #64ffda; color: #0a192f; }
+    .reject { background: #ff6470; color: #fff; }
+    .approved { color: #64ffda; }
+    .pending { color: #ffd700; }
+    .rejected { color: #ff6470; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Portfolio Admin Panel</h1>
+    <div id="portfolioList" class="portfolio-list"></div>
+  </div>
+  <script src="admin-panel.js"></script>
+</body>
+</html>

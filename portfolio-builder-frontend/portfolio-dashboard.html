@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InternAI Portfolio Builder</title>
+  <link rel="stylesheet" href="portfolio-dashboard.css">
+</head>
+<body>
+  <div class="bg-3d"></div>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="logo neon">InternAI</h1>
+        <span class="plan">Free Plan</span>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="active">Home</li>
+          <li>About</li>
+          <li>Skills</li>
+          <li>Services</li>
+          <li>Portfolio</li>
+          <li>Reviews</li>
+          <li>Achievements</li>
+          <li>Certifications</li>
+          <li>Contact</li>
+        </ul>
+        <div class="theme-switcher">
+          <label for="themeSelect" class="theme-label">Theme:</label>
+          <select id="themeSelect">
+            <option value="neon">Neon Blue</option>
+            <option value="classic">Classic Blue</option>
+          </select>
+        </div>
+      </nav>
+    </aside>
+    <main class="main-editor">
+      <div class="card glass">
+        <h2 class="neon">Portfolio Builder Dashboard</h2>
+        <form id="portfolioForm">
+          <!-- Home Section -->
+          <section class="section-block">
+            <h3 class="section-title">Home (Hero)</h3>
+            <div class="form-row">
+              <label>Profile Image
+                <input type="file" accept="image/*" id="profileImageInput" />
+              </label>
+              <img id="profileImagePreview" src="" alt="Profile Preview" style="max-width:80px;display:none;border-radius:50%;margin-top:0.5em;" />
+            </div>
+            <input type="text" id="userName" placeholder="+ Your Name" class="input-block" />
+            <input type="text" id="userTitle" placeholder="+ Professional Title" class="input-block" />
+            <textarea id="userBio" placeholder="+ Add description" class="input-block"></textarea>
+            <input type="text" id="userSocial" placeholder="+ Social Link (e.g. LinkedIn)" class="input-block" />
+          </section>
+          <!-- About Section -->
+          <section class="section-block">
+            <h3 class="section-title">About</h3>
+            <textarea id="aboutText" placeholder="+ Add about info" class="input-block"></textarea>
+          </section>
+          <!-- Skills Section -->
+          <section class="section-block">
+            <h3 class="section-title">Skills</h3>
+            <div id="skillsList"></div>
+            <button type="button" id="addSkillBtn" class="add-btn">+ Add Skill</button>
+          </section>
+          <!-- Services Section -->
+          <section class="section-block">
+            <h3 class="section-title">Services</h3>
+            <div id="servicesList"></div>
+            <button type="button" id="addServiceBtn" class="add-btn">+ Add Service</button>
+          </section>
+          <!-- Portfolio Section -->
+          <section class="section-block">
+            <h3 class="section-title">Portfolio</h3>
+            <div id="projectsList"></div>
+            <button type="button" id="addProjectBtn" class="add-btn">+ Add Project</button>
+          </section>
+          <!-- Reviews Section -->
+          <section class="section-block">
+            <h3 class="section-title">Reviews</h3>
+            <div id="reviewsList"></div>
+            <button type="button" id="addReviewBtn" class="add-btn">+ Add Review</button>
+          </section>
+          <!-- Achievements Section -->
+          <section class="section-block">
+            <h3 class="section-title">Achievements</h3>
+            <div id="achievementsList"></div>
+            <button type="button" id="addAchievementBtn" class="add-btn">+ Add Achievement</button>
+          </section>
+          <!-- Certifications Section -->
+          <section class="section-block">
+            <h3 class="section-title">Certifications</h3>
+            <div id="certificationsList"></div>
+            <button type="button" id="addCertBtn" class="add-btn">+ Add Certificate</button>
+          </section>
+          <!-- Contact Section -->
+          <section class="section-block">
+            <h3 class="section-title">Contact</h3>
+            <input type="email" id="contactEmail" placeholder="+ Email" class="input-block" />
+            <input type="text" id="contactPhone" placeholder="+ Phone" class="input-block" />
+            <input type="text" id="contactLocation" placeholder="+ Location" class="input-block" />
+          </section>
+          <div class="save-preview-bar">
+            <button type="button" id="saveBtn" class="add-btn">Save</button>
+            <button type="button" id="previewBtn" class="add-btn" style="background:#222;color:#00e6ff;">Preview</button>
+            <button type="button" id="publishBtn" class="add-btn" style="background:#3399ff;color:#fff;">Publish</button>
+          </div>
+          <div id="publishResult" style="display:none;margin-top:1em;text-align:center;"></div>
+        </form>
+        <div id="portfolioPreviewModal" class="preview-modal" style="display:none;">
+          <div class="preview-content">
+            <button id="closePreviewBtn" class="add-btn" style="float:right;background:#222;color:#00e6ff;">Close Preview</button>
+            <h2 class="neon">Portfolio Preview</h2>
+            <div id="previewArea"></div>
+          </div>
+        </div>
+        <footer class="branding">© InternAI. Made by InternAI</footer>
+      </div>
+    </main>
+  </div>
+</main>
+  <footer class="fixed-footer">© InternAI. Made by InternAI</footer>
+  <script src="portfolio-dashboard.js"></script>
+</body>
+</html>
